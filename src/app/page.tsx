@@ -38,16 +38,59 @@ const App = () => {
   const [title, setTitle] = useState("");
 
   const onAddQuestion = () => {
+    if (selectedQuestion) {
+      const selectedIdx = questions.findIndex(
+        (item) => item.id === selectedQuestion.id
+      );
+
+      const firstQuestions = questions.slice(0, selectedIdx + 1);
+      const secondQuestions = questions.slice(selectedIdx + 1);
+
+      return setQuestions(
+        [
+          ...firstQuestions,
+          {
+            id: Math.random() * 10,
+            label: "",
+            type: "text",
+            x: 400,
+            y: questions.length * 100,
+          } as Question,
+          ...secondQuestions,
+        ].map((item, idx) => {
+          return {
+            ...item,
+            x: 400,
+            y: idx * 100,
+          };
+        })
+      );
+    }
     setQuestions([
       ...questions,
       {
-        id: questions.length + 1,
+        id: Math.random() * 10,
         label: "",
         type: "text",
         x: 400,
         y: questions.length * 100,
       },
     ]);
+  };
+
+  const onRemoveQuestion = (id: number) => {
+    setQuestions(
+      questions
+        .filter((item) => item.id !== id)
+        .map((item, idx) => {
+          return {
+            ...item,
+            x: 400,
+            y: idx * 100,
+          };
+        })
+    );
+    setSelectedQuestion(undefined);
   };
 
   const onSaveQuestion = (values: any) => {
@@ -65,7 +108,7 @@ const App = () => {
     );
   };
 
-  console.log("selectedQuestion :>> ", selectedQuestion);
+  console.log("questions :>> ", questions);
 
   return (
     <div className="">
@@ -111,6 +154,7 @@ const App = () => {
             <CustomizeQuestionForm
               question={selectedQuestion}
               onSaveQuestion={onSaveQuestion}
+              onDelete={onRemoveQuestion}
             />
           )}
         </section>
