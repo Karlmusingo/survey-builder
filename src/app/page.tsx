@@ -3,26 +3,28 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import { Plus } from "lucide-react";
 import { Button } from "@src/components/ui/button";
+import CustomizeQuestionForm from "./CustomizeQuestionForm";
 
 const Canvas = dynamic(() => import("./Canvas"), {
   ssr: false,
 });
 
-export enum QuestionTypeEnum {
-  TEXT = "text",
-  NUMBER = "number",
-  EMAIL = "email",
-  TEXTAREA = "textarea",
-  SELECT = "select",
-  MULTI_SELECT = "multiSelect",
-}
+export type QuestionType =
+  | "number"
+  | "text"
+  | "email"
+  | "textarea"
+  | "select"
+  | "multiSelect"
+  | undefined;
 
 export type Question = {
   id: number;
   label: string;
-  type: QuestionTypeEnum;
+  type?: QuestionType;
   maxLength?: number;
-  answers?: string[];
+  minLength?: number;
+  answers?: { answer: string }[];
   min?: number;
   max?: number;
   x: number;
@@ -31,21 +33,37 @@ export type Question = {
 
 const App = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [selectedQuestion, setSelectedQuestion] = useState<Question>();
 
   const onAddQuestion = () => {
     setQuestions([
       ...questions,
       {
         id: questions.length + 1,
-        label: "What is the grandfather's name?",
-        type: QuestionTypeEnum.TEXT,
+        label: "",
+        type: "text",
         x: 400,
         y: questions.length * 100,
       },
     ]);
   };
 
-  console.log("questions :>> ", questions);
+  const onSaveQuestion = (values: any) => {
+    setSelectedQuestion(undefined);
+    setQuestions(
+      questions.map((item) => {
+        if (item.id === selectedQuestion?.id) {
+          return {
+            ...item,
+            ...values,
+          };
+        }
+        return item;
+      })
+    );
+  };
+
+  console.log("selectedQuestion :>> ", selectedQuestion);
 
   return (
     <main className="grid grid-cols-10 gap-2 p-2">
@@ -58,9 +76,24 @@ const App = () => {
         >
           <Plus strokeWidth={2} size={48} />
         </Button>
-        <Canvas questions={questions} />
+        <Canvas
+          questions={questions}
+          onClick={(id) => {
+            setSelectedQuestion(questions.find((item) => item.id === id));
+          }}
+        />
       </section>
-      <section className="bg-blue-700 col-span-3"></section>
+      <section className="border-blue-400 border-l-[1px] col-span-3 p-4">
+        <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight mb-4">
+          Edit question
+        </h3>
+        {selectedQuestion && (
+          <CustomizeQuestionForm
+            question={selectedQuestion}
+            onSaveQuestion={onSaveQuestion}
+          />
+        )}
+      </section>
     </main>
   );
 };
