@@ -2,7 +2,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, Delete, Trash } from "lucide-react";
 import { Button } from "@src/components/ui/button";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -84,9 +84,14 @@ const formSchema = z.object({
 type Props = {
   question?: Question;
   onSaveQuestion: (values: z.infer<typeof formSchema>) => void;
+  onDelete: (id: number) => void;
 };
 
-const CustomizeQuestionForm = ({ question, onSaveQuestion }: Props) => {
+const CustomizeQuestionForm = ({
+  question,
+  onSaveQuestion,
+  onDelete,
+}: Props) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { answers: [{ answer: "" }] },
@@ -309,7 +314,18 @@ const CustomizeQuestionForm = ({ question, onSaveQuestion }: Props) => {
             />
           </>
         )}
-        <Button type="submit">Save</Button>
+        <div className="flex justify-between">
+          <Button type="submit">Save</Button>
+          <Button
+            variant="destructive"
+            size="icon"
+            type="button"
+            className="cursor-pointer"
+            onClick={() => question?.id && onDelete(question.id)}
+          >
+            <Trash strokeWidth={2} size={18} />
+          </Button>
+        </div>
       </form>
     </Form>
   );
