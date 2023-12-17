@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { Plus } from "lucide-react";
 import { Button } from "@src/components/ui/button";
 import CustomizeQuestionForm from "./CustomizeQuestionForm";
+import { Input } from "@src/components/ui/input";
 
 const Canvas = dynamic(() => import("./Canvas"), {
   ssr: false,
@@ -34,6 +35,7 @@ export type Question = {
 const App = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [selectedQuestion, setSelectedQuestion] = useState<Question>();
+  const [title, setTitle] = useState("");
 
   const onAddQuestion = () => {
     setQuestions([
@@ -66,35 +68,54 @@ const App = () => {
   console.log("selectedQuestion :>> ", selectedQuestion);
 
   return (
-    <main className="grid grid-cols-10 gap-2 p-2">
-      <section className="col-span-7 relative">
-        <Button
-          variant="default"
-          size="icon"
-          className="shadow-2xl cursor-pointer z-50 absolute right-2 top-2"
-          onClick={() => onAddQuestion()}
-        >
-          <Plus strokeWidth={2} size={48} />
-        </Button>
-        <Canvas
-          questions={questions}
-          onClick={(id) => {
-            setSelectedQuestion(questions.find((item) => item.id === id));
-          }}
-        />
-      </section>
-      <section className="border-blue-400 border-l-[1px] col-span-3 p-4">
-        <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight mb-4">
-          Edit question
-        </h3>
-        {selectedQuestion && (
-          <CustomizeQuestionForm
-            question={selectedQuestion}
-            onSaveQuestion={onSaveQuestion}
+    <div className="">
+      <div className="w-full p-10">
+        <h1 className="text-3xl text-center font-bold">Survey Builder</h1>
+        <div className="flex justify-between items-center">
+          <div className="flex items-center w-3/4">
+            <label className="w-40 text-xl">Survey Title:</label>
+            <Input
+              className="text-xl border-t-0 border-r-0 border-l-0 rounded-none focus-visible:rounded-sm shadow-none drop-shadow-none"
+              placeholder="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
+          <div>
+            <Button type="submit">Export</Button>
+          </div>
+        </div>
+      </div>
+      <main className="grid grid-cols-10 gap-2 p-2">
+        <section className="col-span-7 relative">
+          <Button
+            variant="default"
+            size="icon"
+            className="shadow-2xl cursor-pointer z-50 absolute right-2 top-2"
+            onClick={() => onAddQuestion()}
+          >
+            <Plus strokeWidth={2} size={48} />
+          </Button>
+          <Canvas
+            questions={questions}
+            onClick={(id) => {
+              setSelectedQuestion(questions.find((item) => item.id === id));
+            }}
           />
-        )}
-      </section>
-    </main>
+        </section>
+        <section className="border-blue-400 border-l-[1px] col-span-3 p-4">
+          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight mb-4">
+            Edit question
+          </h3>
+          {selectedQuestion && (
+            <CustomizeQuestionForm
+              question={selectedQuestion}
+              onSaveQuestion={onSaveQuestion}
+            />
+          )}
+        </section>
+      </main>
+    </div>
   );
 };
 
