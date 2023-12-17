@@ -213,7 +213,7 @@ const CustomizeQuestionForm = ({ question, onSaveQuestion }: Props) => {
                 <FormItem>
                   <FormLabel>Min Length</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="1" {...field} />
+                    <Input type="number" placeholder="Min" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -226,7 +226,7 @@ const CustomizeQuestionForm = ({ question, onSaveQuestion }: Props) => {
                 <FormItem>
                   <FormLabel>Max Length</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="1" {...field} />
+                    <Input type="number" placeholder="Max" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -288,7 +288,7 @@ const CustomizeQuestionForm = ({ question, onSaveQuestion }: Props) => {
                 <FormItem>
                   <FormLabel>Min</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="1" {...field} />
+                    <Input type="number" placeholder="Min" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -301,7 +301,7 @@ const CustomizeQuestionForm = ({ question, onSaveQuestion }: Props) => {
                 <FormItem>
                   <FormLabel>Max</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="1" {...field} />
+                    <Input type="number" placeholder="Max" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
