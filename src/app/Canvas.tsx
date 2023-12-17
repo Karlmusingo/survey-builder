@@ -4,9 +4,10 @@ import { Question } from "./page";
 
 type Props = {
   questions: Question[];
+  onClick: (id: number) => void;
 };
 
-function Canvas({ questions }: Props) {
+function Canvas({ questions, onClick }: Props) {
   return (
     <Stage
       width={window.innerWidth - 465}
@@ -25,14 +26,22 @@ function Canvas({ questions }: Props) {
               strokeWidth={1}
               cornerRadius={[5, 5, 5, 5]}
               fill="green"
+              onClick={() => onClick(question.id)}
+              onMouseOver={() => console.log("On mouse over")}
             />
             <Text
               x={question.x + 15}
               y={question.y + 15}
-              text={`${question.id} - ${question?.label?.slice(0, 22)}...`}
+              text={`${question.id} - ${
+                question?.label?.length > 22
+                  ? `${question?.label?.slice(0, 22)}...`
+                  : question?.label
+              }`}
+              ellipsis
               fontSize={16}
-              fontFamily="Calibri"
+              fontFamily="Arial"
               fill="white"
+              onClick={() => onClick(question.id)}
             />
             {idx + 1 < array.length && (
               <Arrow
