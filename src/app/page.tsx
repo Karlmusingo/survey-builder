@@ -124,10 +124,12 @@ const App = () => {
         title,
         fields: questions.map((question) => {
           return {
-            ...question,
-            x: undefined,
-            y: undefined,
-            answers:
+            field_name: question.label,
+            input_type: question.type,
+            expected_length: question.maxLength,
+            min_value: question.min,
+            max_value: question.max,
+            choices:
               question.type === "select" || question.type === "multiSelect"
                 ? question.answers
                 : undefined,
