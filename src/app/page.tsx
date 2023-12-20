@@ -36,6 +36,7 @@ const App = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [selectedQuestion, setSelectedQuestion] = useState<Question>();
   const [title, setTitle] = useState("");
+  const [titleError, setTitleError] = useState("");
 
   const onAddQuestion = () => {
     if (selectedQuestion) {
@@ -50,7 +51,7 @@ const App = () => {
         [
           ...firstQuestions,
           {
-            id: Math.random() * 10,
+            id: Math.floor(Math.random() * 1000) + 1,
             label: "",
             type: "text",
             x: 400,
@@ -66,10 +67,11 @@ const App = () => {
         })
       );
     }
+
     setQuestions([
       ...questions,
       {
-        id: Math.random() * 10,
+        id: Math.floor(Math.random() * 1000) + 1,
         label: "",
         type: "text",
         x: 400,
@@ -108,6 +110,48 @@ const App = () => {
     );
   };
 
+  const exportQuestions = () => {
+    if (!title) {
+      setTitleError("Title is required");
+      return;
+    }
+    if (!questions.length) {
+      setTitleError("You can't export an empty survey");
+      return;
+    }
+    const questionString = JSON.stringify(
+      {
+        title,
+        fields: questions.map((question) => {
+          return {
+            ...question,
+            x: undefined,
+            y: undefined,
+            answers:
+              question.type === "select" || question.type === "multiSelect"
+                ? question.answers
+                : undefined,
+          };
+        }),
+      },
+      null,
+      2
+    );
+
+    const blob = new Blob([questionString], { type: "application/json" });
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "survey.json";
+    document.body.appendChild(a);
+    a.click();
+
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   console.log("questions :>> ", questions);
 
   return (
@@ -117,15 +161,30 @@ const App = () => {
         <div className="flex justify-between items-center">
           <div className="flex items-center w-3/4">
             <label className="w-40 text-xl">Survey Title:</label>
-            <Input
-              className="text-xl border-t-0 border-r-0 border-l-0 rounded-none focus-visible:rounded-sm shadow-none drop-shadow-none"
-              placeholder="Title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
+
+            <div className="w-full">
+              <Input
+                className="text-xl border-t-0 border-r-0 border-l-0 rounded-none focus-visible:rounded-sm shadow-none drop-shadow-none"
+                placeholder="Title"
+                value={title}
+                onChange={(e) => {
+                  setTitleError("");
+                  setTitle(e.target.value);
+                }}
+              />
+              {titleError && <span className="text-red-500">{titleError}</span>}
+            </div>
           </div>
+
           <div>
-            <Button type="submit">Export</Button>
+            <Button
+              type="submit"
+              onClick={() => {
+                exportQuestions();
+              }}
+            >
+              Export
+            </Button>
           </div>
         </div>
       </div>
@@ -144,6 +203,7 @@ const App = () => {
             onClick={(id) => {
               setSelectedQuestion(questions.find((item) => item.id === id));
             }}
+            selectedId={selectedQuestion?.id}
           />
         </section>
         <section className="border-blue-400 border-l-[1px] col-span-3 p-4">

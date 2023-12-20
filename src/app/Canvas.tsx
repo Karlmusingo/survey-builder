@@ -5,9 +5,10 @@ import { Question } from "./page";
 type Props = {
   questions: Question[];
   onClick: (id: number) => void;
+  selectedId?: number;
 };
 
-function Canvas({ questions, onClick }: Props) {
+function Canvas({ questions, onClick, selectedId }: Props) {
   return (
     <Stage
       width={window.innerWidth - 465}
@@ -25,14 +26,14 @@ function Canvas({ questions, onClick }: Props) {
               stroke="black"
               strokeWidth={1}
               cornerRadius={[5, 5, 5, 5]}
-              fill="green"
+              fill={question.id === selectedId ? "green" : "white"}
               onClick={() => onClick(question.id)}
               onMouseOver={() => console.log("On mouse over")}
             />
             <Text
               x={question.x + 15}
               y={question.y + 15}
-              text={`${question.id} - ${
+              text={`${idx + 1} - ${
                 question?.label?.length > 22
                   ? `${question?.label?.slice(0, 22)}...`
                   : question?.label
@@ -40,17 +41,17 @@ function Canvas({ questions, onClick }: Props) {
               ellipsis
               fontSize={16}
               fontFamily="Arial"
-              fill="white"
+              fill={question.id === selectedId ? "white" : "green"}
               onClick={() => onClick(question.id)}
             />
             {idx + 1 < array.length && (
               <Arrow
-                points={[500, question.y + 40, 500, question.y + 93]}
-                pointerWidth={7}
-                pointerLength={7}
+                points={[500, question.y + 40, 500, question.y + 97]}
+                pointerWidth={5}
+                pointerLength={5}
                 fill="black"
                 stroke="black"
-                strokeWidth={4}
+                strokeWidth={2}
               />
             )}
           </React.Fragment>
